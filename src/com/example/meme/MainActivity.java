@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
 	private static final String KEY_COUNT = "count";
 	private SharedPreferences mPrefs;
 	private int count;
+	private EditText contentText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +158,20 @@ public class MainActivity extends Activity {
 	}
 	
 	public void saveAndShare(View v) {
-		if (mBitmap == null) {
+		//get the text in AddText field
+		contentText = (EditText) findViewById(R.id.addText);
+		String content = contentText.getText().toString();
+		
+		if (mBitmap == null && content == "") {
+			return;
+		}
+		
+		if(mBitmap == null && !(content == "")){
+			// Send the text to my friend... 
+			Intent share = new Intent(Intent.ACTION_SEND);
+			share.setType("text/plain");
+			share.putExtra(Intent.EXTRA_TEXT, content);
+			startActivity(Intent.createChooser(share, "Share using..."));
 			return;
 		}
 		
@@ -172,19 +186,9 @@ public class MainActivity extends Activity {
 		Log.d(TAG, "saveAndShare path = " + path);
 		path.mkdirs();
 
-		// Note, for display purposes
-		// SimpleDateFormat.getTimeInstance()
-		// getDateTimeInstance() or getDateIntance
-		// are more appropriate.
-		// For filenames we can use the following specification
 		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
 		String filename = "Imagen_" + timestamp + ".jpg";
-		// Alternatively ... use System.currentTimeMillis()
-
-		// Creating a new File object in Java does not create a new
-		// file on the device. The file object just represents
-		// a location or path that may or may not exist
 		File file = new File(path, filename);
 		FileOutputStream stream;
 		try {
@@ -199,9 +203,6 @@ public class MainActivity extends Activity {
 		
 		Uri uri = Uri.fromFile(file);
 		
-		EditText contentText = (EditText) findViewById(R.id.addText);
-		String content = contentText.getText().toString();
-		
 		// Tell Android that a new public picture exists
 		
 		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -210,9 +211,6 @@ public class MainActivity extends Activity {
 
 		// Send the public picture file to my friend... 
 		Intent share = new Intent(Intent.ACTION_SEND);
-		/*share.setType("image/jpeg");
-		share.putExtra(Intent.EXTRA_STREAM, uri);
-		startActivity(Intent.createChooser(share, "Share using..."));*/
 		share.setType("*/*");
 		share.putExtra(Intent.EXTRA_TEXT, content);
 		share.putExtra(Intent.EXTRA_STREAM, uri);
