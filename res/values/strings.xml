@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MeMe</string>
+    <string name="action_settings">Settings</string>
+    <string name="share">Share</string>
+    <string name="add_text_here">Add text ...</string>
+    <string name="name">Add your name: </string>
+    <string name="imageView">Image View</string>
+    
+</resources>
